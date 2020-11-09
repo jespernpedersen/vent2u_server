@@ -1,1 +1,5 @@
-"# vent2u_server" 
+Setup: 
+npm install
+
+Run: 
+node index.js
