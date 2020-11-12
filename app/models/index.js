@@ -15,5 +15,7 @@ db.rooms = require("./room.model.js")(sequelize, Sequelize);
 //db.vents = require("./tutorial.model.js")(sequelize, Sequelize);
 //db.claimRequests = require("./tutorial.model.js")(sequelize, Sequelize);
 //db.users = require("./tutorial.model.js")(sequelize, Sequelize);
+db.presets = require("./preset.model.js")(sequelize, Sequelize);
+
 
 module.exports = db;
