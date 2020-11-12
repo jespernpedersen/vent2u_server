@@ -1,11 +1,28 @@
-const express = require('express')
-const app = express()
-const port = 3000;
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 
-app.get('/', (req, res) => {
-    res.send('Hello World!')
-})
+const app = express();
+app.use(cors());
 
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
-})
+/*var corsOptions = {
+  origin: "http://localhost:8081"
+};
+
+app.use(cors(corsOptions));*/
+const db = require("./app/models");
+
+//db.sequelize.sync();
+
+// parse requests of content-type - application/json
+app.use(bodyParser.json());
+
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
+
+require("./app/routes/vent2u.routes")(app);
+// set port, listen for requests
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server started at http://localhost:${PORT}.`);
+});
