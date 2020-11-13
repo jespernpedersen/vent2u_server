@@ -6,8 +6,12 @@ module.exports = app => {
 
     const vents = require("../controllers/vent.controller");
 
+    // Read,
     router.get('/', vents.get);
     router.get('/:id', vents.get);
+
+    // Create, Update
+    router.post('/:id', vents.post);
 
     app.use(settings.PATH + '/vents', router);
 }
