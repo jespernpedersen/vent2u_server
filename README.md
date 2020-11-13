@@ -40,8 +40,6 @@ everytime you create a new endpoint
 [GET] http://localhost:8080/vent2u/class/[id]
 [GET] http://localhost:8080/vent2u/class/[id]/students
 
-[GET] http://localhost:8080/vent2u/vent
-[GET] http://localhost:8080/vent2u/vent/[id]
 [POST] http://localhost:8080/vent2u/vent/[id]/claim
 [UPDATE] http://localhost:8080/vent2u/vent/[id]/assign/[user_id]
 [UPDATE] http://localhost:8080/vent2u/vent/[id]/temperature/[value]
