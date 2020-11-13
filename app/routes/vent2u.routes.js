@@ -5,4 +5,5 @@ module.exports = app => {
     require("./rooms.routes")(app);
     require("./presets.routes")(app);
     require("./claims.routes")(app);
+    require("./claimRequestStatus.routes")(app);
 };

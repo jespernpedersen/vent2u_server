@@ -3,7 +3,9 @@ const {
 } = require("console");
 const db = require("../models");
 const ClaimRequests = db.claimRequests;
+const ClaimStatus = db.claimRequestStatus;
 const Op = db.Sequelize.Op;
+
 
 exports.get = (req, res) => {
 
@@ -11,13 +13,14 @@ exports.get = (req, res) => {
         ID: req.params.id
     } : null;
 
+    ClaimRequests.hasOne(ClaimStatus, {foreignKey: "ID"});
+    ClaimStatus.belongsTo(ClaimRequests,  {foreignKey: "ID"});
 
-    /**
-     * TODO: Add a join to include the claim request status name to the result
-     */
     ClaimRequests.findAll({
-            where: condition
-        })
+            where: condition,
+            include: ClaimStatus,
+            attributes: ["ID", "student_id", "vent_id", "approved_by_id"]
+        }, )
         .then(data => {
             res.send(data);
         })
