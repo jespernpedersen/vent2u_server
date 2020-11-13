@@ -4,4 +4,6 @@ module.exports = app => {
     require("./vents.routes")(app);
     require("./rooms.routes")(app);
     require("./classes.routes")(app);
+    require("./presets.routes")(app);
+    require("./claims.routes")(app);
 };

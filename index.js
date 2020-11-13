@@ -5,6 +5,9 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 
+app.use(bodyParser.json())
+
+
 /*var corsOptions = {
   origin: "http://localhost:8081"
 };
@@ -24,5 +27,5 @@ require("./app/routes/vent2u.routes")(app);
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-  console.log(`Server started at http://localhost:${PORT}.`);
+    console.log(`Server started at http://localhost:${PORT}.`);
 });
