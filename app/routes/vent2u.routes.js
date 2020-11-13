@@ -6,4 +6,5 @@ module.exports = app => {
     require("./classes.routes")(app);
     require("./presets.routes")(app);
     require("./claims.routes")(app);
+    require("./claimRequestStatus.routes")(app);
 };
