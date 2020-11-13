@@ -29,7 +29,7 @@ exports.update = (req, res) => {
                 });
             } else {
                 res.send({
-                    message: `No changes detected for vent with id` + id
+                    message: `No changes detected for vent with id ` + id
                 });
             }
         })
