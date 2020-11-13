@@ -13,6 +13,7 @@ db.sequelize = sequelize;
 
 db.rooms = require("./room.model.js")(sequelize, Sequelize);
 db.vents = require("./vent.model.js")(sequelize, Sequelize);
+db.claimRequests = require("./claim.model.js")(sequelize, Sequelize);
 //db.vents = require("./tutorial.model.js")(sequelize, Sequelize);
 //db.claimRequests = require("./tutorial.model.js")(sequelize, Sequelize);
 //db.users = require("./tutorial.model.js")(sequelize, Sequelize);
