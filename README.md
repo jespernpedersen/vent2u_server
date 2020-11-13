@@ -27,7 +27,10 @@ everytime you create a new endpoint
 
 ** Endpoints
 `[GET] http://localhost:8080/vent2u/rooms/
-[GET] http://localhost:8080/vent2u/rooms/[id]`
+[GET] http://localhost:8080/vent2u/rooms/[id]
+[GET] http://localhost:8080/vent2u/vent/
+[GET] http://localhost:8080/vent2u/vent/[id]
+[PUT] http://localhost:8080/vent2u/vents/`
 
 *** planned
 [POST] http://localhost:8080/vent2u/user/login
