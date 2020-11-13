@@ -8,6 +8,7 @@ module.exports = app => {
 
     router.get('/', rooms.get);
     router.get('/:id', rooms.get);
+    
 
     app.use(settings.PATH + '/rooms', router);
 }
