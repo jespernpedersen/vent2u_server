@@ -11,7 +11,7 @@ module.exports = app => {
     router.get('/:id', vents.get);
 
     // Create, Update
-    router.post('/:id', vents.post);
+    router.put('/:id', vents.update);
 
     app.use(settings.PATH + '/vents', router);
 }

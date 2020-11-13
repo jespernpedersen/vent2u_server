@@ -3,7 +3,6 @@ const Vents = db.vents;
 const Op = db.Sequelize.Op;
 
 exports.get = (req, res) => {
-
     condition = req.params.id ? { ID: req.params.id } : null;
 
     Vents.findAll({ where: condition })
@@ -17,24 +16,29 @@ exports.get = (req, res) => {
         });
 }
 
-exports.post = (req, res) => {
-    // ID
-    condition = req.params.id ? { ID: req.params.id } : null;
-    // Data sent from Frontend
-    const body = req.body[0];
-    Vents.findOne({ where: condition }).then(vent => {
-            // res.send(vent);
-            if (vent) {
-                vent.update({
-                        temperature: body.temperature,
-                        humidity: body.humidity
-                    })
-                    // res.send("Updated vent: " + req.params.id)
+exports.update = (req, res) => {
+    const id = req.body.ID;
+
+    console.log(req.body);
+
+    Vents.update(req.body, {
+            where: { id: id }
+        })
+        .then(num => {
+            console.log(num);
+            if (num == 1) {
+                res.send({
+                    message: "Vent was updated successfully."
+                });
+            } else {
+                res.send({
+                    message: `No changes detected for vent with id` + id
+                });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: err.message || "Could not update vent data."
+                message: "Error updating Vent with id=" + id
             });
         });
 }
