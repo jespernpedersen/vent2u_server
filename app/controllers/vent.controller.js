@@ -18,9 +18,6 @@ exports.get = (req, res) => {
 
 exports.update = (req, res) => {
     const id = req.body.ID;
-
-    console.log(req.body);
-
     Vents.update(req.body, {
             where: { id: id }
         })
