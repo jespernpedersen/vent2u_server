@@ -1,4 +1,101 @@
 {
+<<<<<<< HEAD
+    "info": {
+        "_postman_id": "93f1edcc-87db-46b5-bca5-2772ee73732a",
+        "name": "Vent2U",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [{
+            "name": "Rooms",
+            "item": [{
+                    "name": "Get Rooms",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "localhost:8080/vent2u/rooms",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8080",
+                            "path": [
+                                "vent2u",
+                                "rooms"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Room",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "localhost:8080/vent2u/rooms/2",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8080",
+                            "path": [
+                                "vent2u",
+                                "rooms",
+                                "2"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ],
+            "protocolProfileBehavior": {}
+        },
+        {
+            "name": "Vents",
+            "item": [{
+                    "name": "Get Vents",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "localhost:8080/vent2u/vents",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8080",
+                            "path": [
+                                "vent2u",
+                                "vents"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Vent",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "localhost:8080/vent2u/vents/2",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8080",
+                            "path": [
+                                "vent2u",
+                                "vents",
+                                "2"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ],
+            "protocolProfileBehavior": {}
+        }
+    ],
+    "protocolProfileBehavior": {}
+=======
 	"info": {
 		"_postman_id": "1c48bd55-a13e-4444-a570-c8a79ebbba37",
 		"name": "Vent2U",
@@ -127,4 +224,5 @@
 		}
 	],
 	"protocolProfileBehavior": {}
+>>>>>>> 9222ef9c80702e6ee983a02f720dba1ce1c75f95
 }
