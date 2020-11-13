@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-    const Preset = sequelize.define("preset", {
+  const Preset = sequelize.define("preset", {
       ID: {
         type: Sequelize.INTEGER,
         primaryKey: true
@@ -17,11 +17,11 @@ module.exports = (sequelize, Sequelize) => {
 
       user_id: {
         type: Sequelize.INTEGER
-      }},
-      
+      }
+    },
     {
       timestamps: false
     });
-  
-    return Preset;
-  };
+
+  return Preset;
+};

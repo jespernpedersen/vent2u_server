@@ -21,9 +21,13 @@ exports.get = (req, res) => {
 
 exports.getFromUser = (req, res) => {
 
-    condition = req.params.id ? {user_id: req.params.id} : null;
+    if(!req.params.id){
+      res.status(412).send({
+        message: "An user id is required"
+      });
+    }
 
-    Presets.findAll({ where: condition })
+    Presets.findAll({ where:  {user_id: req.params.id} })
     .then( data => {
         res.send(data);
     })
