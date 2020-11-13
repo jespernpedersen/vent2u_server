@@ -1,103 +1,6 @@
 {
-<<<<<<< HEAD
-    "info": {
-        "_postman_id": "93f1edcc-87db-46b5-bca5-2772ee73732a",
-        "name": "Vent2U",
-        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-    },
-    "item": [{
-            "name": "Rooms",
-            "item": [{
-                    "name": "Get Rooms",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "localhost:8080/vent2u/rooms",
-                            "host": [
-                                "localhost"
-                            ],
-                            "port": "8080",
-                            "path": [
-                                "vent2u",
-                                "rooms"
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Room",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "localhost:8080/vent2u/rooms/2",
-                            "host": [
-                                "localhost"
-                            ],
-                            "port": "8080",
-                            "path": [
-                                "vent2u",
-                                "rooms",
-                                "2"
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ],
-            "protocolProfileBehavior": {}
-        },
-        {
-            "name": "Vents",
-            "item": [{
-                    "name": "Get Vents",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "localhost:8080/vent2u/vents",
-                            "host": [
-                                "localhost"
-                            ],
-                            "port": "8080",
-                            "path": [
-                                "vent2u",
-                                "vents"
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Vent",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "localhost:8080/vent2u/vents/2",
-                            "host": [
-                                "localhost"
-                            ],
-                            "port": "8080",
-                            "path": [
-                                "vent2u",
-                                "vents",
-                                "2"
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ],
-            "protocolProfileBehavior": {}
-        }
-    ],
-    "protocolProfileBehavior": {}
-=======
 	"info": {
-		"_postman_id": "1c48bd55-a13e-4444-a570-c8a79ebbba37",
+		"_postman_id": "bab247fd-27ba-4178-9cc6-dca596e7605d",
 		"name": "Vent2U",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -221,8 +124,173 @@
 				}
 			],
 			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Claim Request Statuses",
+			"item": [
+				{
+					"name": "Get Status List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/vent2u/claimstatus",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"vent2u",
+								"claimstatus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/vent2u/claimstatus",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"vent2u",
+								"claimstatus"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Claim Requests",
+			"item": [
+				{
+					"name": "Create Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"student_id\": 5,\r\n    \"vent_id\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/vent2u/claims",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"vent2u",
+								"claims"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Claim",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "student_id",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "vent_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "ID",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "status_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "approved_by_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8080/vent2u/claims",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"vent2u",
+								"claims"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Claims",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/vent2u/claims",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"vent2u",
+								"claims"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Claim",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/vent2u/claims/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"vent2u",
+								"claims",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"protocolProfileBehavior": {}
->>>>>>> 9222ef9c80702e6ee983a02f720dba1ce1c75f95
 }
