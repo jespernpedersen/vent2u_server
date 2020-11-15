@@ -16,10 +16,53 @@ exports.get = (req, res) => {
         });
 }
 
+exports.getFromRoom = (req, res) => {
+    const Sequelize = require("sequelize");
+    const sequelize = new Sequelize('vent2u', 'manager', ']SgtSF~BG)8WN^%p', {
+        host: "localhost",
+        dialect: "mysql",
+        port: 3306,
+        syncOnAssociation: false
+    });
+
+    const query = `SELECT vents.ID, (SELECT CASE WHEN vents.user_id IS NOT NULL THEN 1 ELSE 0 END) as isClaimed, vents.vent_group_id 
+    FROM vents 
+    LEFT JOIN ventgroups 
+    ON vents.vent_group_id = ventgroups.ID 
+    WHERE ventgroups.room_id = ?`;
+
+    sequelize.query(query, {
+        replacements: [req.params.id],
+        type: sequelize.QueryTypes.SELECT
+      }).then(data => {
+        res.send(data);
+      })
+      .catch(err => {
+        res.status(500).send({
+            message: "Error updating Vent with id=" + id
+        });
+    });
+}
+
+exports.getFromUser = (req, res) => {
+
+    condition = req.params.id ? { user_id: req.params.id } : null;
+
+    Vents.findOne({ where: condition })
+    .then(data => {
+        res.send(data);
+      })
+      .catch(err => {
+        res.status(500).send({
+            message: "Finding vent that belongs to user " + id
+        });
+    });
+}
+
 exports.update = (req, res) => {
     const id = req.body.ID;
     Vents.update(req.body, {
-            where: { id: id }
+            where: { ID: id }
         })
         .then(num => {
             console.log(num);
