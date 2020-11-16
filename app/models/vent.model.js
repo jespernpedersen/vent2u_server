@@ -19,7 +19,7 @@ module.exports = (sequelize, Sequelize) => {
         vent_group_id: {
             type: Sequelize.INTEGER
         },
-        presets_id: {
+        preset_id: {
             type: Sequelize.INTEGER
         }
     }, {

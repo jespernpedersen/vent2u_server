@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "bab247fd-27ba-4178-9cc6-dca596e7605d",
-		"name": "Vent2U",
+		"_postman_id": "19b9b4ab-603f-4cad-9172-0a685f9bd180",
+		"name": "Vent2U Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -283,6 +283,92 @@
 								"vent2u",
 								"claims",
 								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Vents",
+			"item": [
+				{
+					"name": "Get Room Vents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/vent2u/vents/room/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"vent2u",
+								"vents",
+								"room",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Vent",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "ID",
+									"value": "6",
+									"type": "text"
+								},
+								{
+									"key": "user_id",
+									"value": "NULL",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/vent2u/vents/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"vent2u",
+								"vents",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Vent Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/vent2u/vents/user/6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"vent2u",
+								"vents",
+								"user",
+								"6"
 							]
 						}
 					},

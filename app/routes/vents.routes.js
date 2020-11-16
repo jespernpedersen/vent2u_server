@@ -9,6 +9,8 @@ module.exports = app => {
     // Read,
     router.get('/', vents.get);
     router.get('/:id', vents.get);
+    router.get('/room/:id', vents.getFromRoom);
+    router.get('/user/:id', vents.getFromUser);
 
     // Create, Update
     router.put('/', vents.update);
