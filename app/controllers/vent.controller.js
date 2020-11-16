@@ -27,21 +27,21 @@ exports.getFromRoom = (req, res) => {
 
     const query = `SELECT vents.ID, (SELECT CASE WHEN vents.user_id IS NOT NULL THEN 1 ELSE 0 END) as isClaimed, vents.vent_group_id 
     FROM vents 
-    LEFT JOIN ventgroups 
-    ON vents.vent_group_id = ventgroups.ID 
-    WHERE ventgroups.room_id = ?`;
+    LEFT JOIN vent_groups 
+    ON vents.vent_group_id = vent_groups.ID 
+    WHERE vent_groups.room_id = ?`;
 
     sequelize.query(query, {
-        replacements: [req.params.id],
-        type: sequelize.QueryTypes.SELECT
-      }).then(data => {
-        res.send(data);
-      })
-      .catch(err => {
-        res.status(500).send({
-            message: "Error updating Vent with id=" + id
+            replacements: [req.params.id],
+            type: sequelize.QueryTypes.SELECT
+        }).then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err
+            });
         });
-    });
 }
 
 exports.getFromUser = (req, res) => {
@@ -49,14 +49,14 @@ exports.getFromUser = (req, res) => {
     condition = req.params.id ? { user_id: req.params.id } : null;
 
     Vents.findOne({ where: condition })
-    .then(data => {
-        res.send(data);
-      })
-      .catch(err => {
-        res.status(500).send({
-            message: "Finding vent that belongs to user " + id
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Finding vent that belongs to user"
+            });
         });
-    });
 }
 
 exports.update = (req, res) => {
