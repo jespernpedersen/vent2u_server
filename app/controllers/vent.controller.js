@@ -25,11 +25,21 @@ exports.getFromRoom = (req, res) => {
         syncOnAssociation: false
     });
 
-    const query = `SELECT vents.ID, (SELECT CASE WHEN vents.user_id IS NOT NULL THEN 1 ELSE 0 END) as isClaimed, vents.vent_group_id 
-    FROM vents 
-    LEFT JOIN ventgroups 
-    ON vents.vent_group_id = ventgroups.ID 
-    WHERE ventgroups.room_id = ?`;
+    let query;
+    
+    if(req.headers.user_role <= 1 || req.headers.user_role == undefined) {
+        query = `SELECT vents.ID, (SELECT CASE WHEN vents.user_id IS NOT NULL THEN 1 ELSE 0 END) as isClaimed, vents.vent_group_id 
+        FROM vents 
+        LEFT JOIN ventgroups 
+        ON vents.vent_group_id = ventgroups.ID 
+        WHERE ventgroups.room_id = ?`;
+    } else {
+        query = `SELECT vents.ID, vents.user_id, vents.vent_group_id 
+        FROM vents 
+        LEFT JOIN ventgroups 
+        ON vents.vent_group_id = ventgroups.ID 
+        WHERE ventgroups.room_id = ?`;
+    }
 
     sequelize.query(query, {
         replacements: [req.params.id],
