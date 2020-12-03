@@ -4,22 +4,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER,
             primaryKey: true
         },
-        temperature: {
-            type: Sequelize.INTEGER
-        },
-        humidity: {
-            type: Sequelize.INTEGER
-        },
-        oxygen_level: {
-            type: Sequelize.INTEGER
-        },
-        user_id: {
-            type: Sequelize.INTEGER
-        },
         vent_group_id: {
-            type: Sequelize.INTEGER
-        },
-        preset_id: {
             type: Sequelize.INTEGER
         }
     }, {
