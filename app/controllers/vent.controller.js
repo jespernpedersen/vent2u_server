@@ -25,11 +25,7 @@ exports.getFromRoom = (req, res) => {
         syncOnAssociation: false
     });
 
-    const query = `SELECT vents.ID, (SELECT CASE WHEN vents.user_id IS NOT NULL THEN 1 ELSE 0 END) as isClaimed, vents.vent_group_id 
-    FROM vents 
-    LEFT JOIN ventgroups 
-    ON vents.vent_group_id = ventgroups.ID 
-    WHERE ventgroups.room_id = ?`;
+    const query = `SELECT * from v_vents WHERE room_ID = ?`;
 
     sequelize.query(query, {
         replacements: [req.params.id],
@@ -38,9 +34,7 @@ exports.getFromRoom = (req, res) => {
         res.send(data);
       })
       .catch(err => {
-        res.status(500).send({
-            message: "Error updating Vent with id=" + id
-        });
+        res.status(500).send(err.original.sqlMessage);
     });
 }
 
