@@ -445,6 +445,15 @@ DELIMITER ;
 --
 -- Estrutura da tabela `votes`
 --
+CREATE TABLE `v_users` (
+`ID` int(11) unsigned
+,`name` varchar(64)
+,`vent_id` int(11) unsigned
+,`room_id` int(11) unsigned
+,`user_role_id` int(3) unsigned
+,`user_role` varchar(32)
+,`logged_in` tinyint(1)
+);
 
 CREATE TABLE `votes` (
   `change_id` int(11) UNSIGNED NOT NULL,
@@ -590,9 +599,9 @@ ALTER TABLE `vents`
 --
 -- Indexes for table `vent_groups`
 --
-ALTER TABLE `vent_groups`
+ALTER TABLE `vents`
   ADD PRIMARY KEY (`ID`),
-  ADD KEY `room_id` (`room_id`);
+  ADD KEY `vent_group_id` (`vent_group_id`);
 
 --
 -- Indexes for table `votes`

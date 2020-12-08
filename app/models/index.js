@@ -11,6 +11,7 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
+db.users = require("./user.model.js")(sequelize, Sequelize);
 db.rooms = require("./room.model.js")(sequelize, Sequelize);
 db.vents = require("./vent.model.js")(sequelize, Sequelize);
 db.classes = require ("./class.model.js") (sequelize, Sequelize);
