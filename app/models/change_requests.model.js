@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-    let Change = sequelize.define("change", {
+    let change_requests = sequelize.define("change_requests", {
         ID: {
             type: Sequelize.INTEGER,
             primaryKey: true
@@ -20,5 +20,5 @@ module.exports = (sequelize, Sequelize) => {
         timestamps: true
     });
 
-    return Change;
+    return change_requests;
 };
