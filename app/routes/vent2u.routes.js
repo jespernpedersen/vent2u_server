@@ -8,4 +8,5 @@ module.exports = app => {
     require("./claims.routes")(app);
     require("./claimRequestStatus.routes")(app);
     require("./users.routes")(app);
+    require("./login.routes")(app)
 };
