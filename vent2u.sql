@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 08-Dez-2020 às 11:03
+-- Generation Time: 09-Dez-2020 às 10:28
 -- Versão do servidor: 10.1.37-MariaDB
 -- versão do PHP: 5.6.39
 
@@ -21,6 +21,16 @@ SET time_zone = "+00:00";
 --
 -- Database: `vent2u`
 --
+
+DELIMITER $$
+--
+-- Procedures
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetNotifications` (IN `userId` INT(11) UNSIGNED)  BEGIN
+	SELECT * from notifications_queue WHERE user_id = userId;
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -53,7 +63,17 @@ CREATE TABLE `change_requests` (
 --
 
 INSERT INTO `change_requests` (`ID`, `user_id`, `vent_id`, `status_id`, `time`) VALUES
-(1, 1, 1, 1, '2020-12-07 14:36:29');
+(2, 1, 5, 1, '2020-12-08 10:54:48');
+
+--
+-- Acionadores `change_requests`
+--
+DELIMITER $$
+CREATE TRIGGER `notify_change_request` AFTER INSERT ON `change_requests` FOR EACH ROW BEGIN
+    INSERT INTO notifications_queue(user_id, action_type_id, foreign_id) SELECT ID, 1, New.id FROM v_users WHERE vent_id = New.vent_id;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -81,6 +101,15 @@ CREATE TABLE `notifications_queue` (
   `foreign_id` int(11) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
+--
+-- Extraindo dados da tabela `notifications_queue`
+--
+
+INSERT INTO `notifications_queue` (`ID`, `user_id`, `action_type_id`, `foreign_id`) VALUES
+(1, 1, 1, 2),
+(2, 2, 1, 2),
+(3, 3, 1, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -91,6 +120,13 @@ CREATE TABLE `notification_type` (
   `ID` int(11) UNSIGNED NOT NULL,
   `name` varchar(32) COLLATE utf8mb4_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Extraindo dados da tabela `notification_type`
+--
+
+INSERT INTO `notification_type` (`ID`, `name`) VALUES
+(1, 'Change Request');
 
 -- --------------------------------------------------------
 
@@ -445,15 +481,6 @@ DELIMITER ;
 --
 -- Estrutura da tabela `votes`
 --
-CREATE TABLE `v_users` (
-`ID` int(11) unsigned
-,`name` varchar(64)
-,`vent_id` int(11) unsigned
-,`room_id` int(11) unsigned
-,`user_role_id` int(3) unsigned
-,`user_role` varchar(32)
-,`logged_in` tinyint(1)
-);
 
 CREATE TABLE `votes` (
   `change_id` int(11) UNSIGNED NOT NULL,
@@ -599,9 +626,9 @@ ALTER TABLE `vents`
 --
 -- Indexes for table `vent_groups`
 --
-ALTER TABLE `vents`
+ALTER TABLE `vent_groups`
   ADD PRIMARY KEY (`ID`),
-  ADD KEY `vent_group_id` (`vent_group_id`);
+  ADD KEY `room_id` (`room_id`);
 
 --
 -- Indexes for table `votes`
@@ -624,7 +651,7 @@ ALTER TABLE `air_properties`
 -- AUTO_INCREMENT for table `change_requests`
 --
 ALTER TABLE `change_requests`
-  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `claim_logs`
@@ -636,13 +663,13 @@ ALTER TABLE `claim_logs`
 -- AUTO_INCREMENT for table `notifications_queue`
 --
 ALTER TABLE `notifications_queue`
-  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `notification_type`
 --
 ALTER TABLE `notification_type`
-  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `options`
