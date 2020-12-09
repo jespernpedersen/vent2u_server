@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 03-Dez-2020 às 20:10
+-- Generation Time: 09-Dez-2020 às 10:28
 -- Versão do servidor: 10.1.37-MariaDB
 -- versão do PHP: 5.6.39
 
@@ -22,54 +22,164 @@ SET time_zone = "+00:00";
 -- Database: `vent2u`
 --
 
+DELIMITER $$
+--
+-- Procedures
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetNotifications` (IN `userId` INT(11) UNSIGNED)  BEGIN
+	SELECT * from notifications_queue WHERE user_id = userId;
+END$$
+
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `claimrequests`
+-- Estrutura da tabela `air_properties`
 --
 
-CREATE TABLE `claimrequests` (
+CREATE TABLE `air_properties` (
   `ID` int(11) UNSIGNED NOT NULL,
-  `student_id` int(11) UNSIGNED NOT NULL,
+  `speed` int(2) DEFAULT NULL,
+  `quality` int(3) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `change_requests`
+--
+
+CREATE TABLE `change_requests` (
+  `ID` int(11) UNSIGNED NOT NULL,
+  `user_id` int(11) UNSIGNED NOT NULL,
   `vent_id` int(11) UNSIGNED NOT NULL,
   `status_id` int(11) UNSIGNED NOT NULL,
-  `approved_by_id` int(11) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Extraindo dados da tabela `change_requests`
+--
+
+INSERT INTO `change_requests` (`ID`, `user_id`, `vent_id`, `status_id`, `time`) VALUES
+(2, 1, 5, 1, '2020-12-08 10:54:48');
+
+--
+-- Acionadores `change_requests`
+--
+DELIMITER $$
+CREATE TRIGGER `notify_change_request` AFTER INSERT ON `change_requests` FOR EACH ROW BEGIN
+    INSERT INTO notifications_queue(user_id, action_type_id, foreign_id) SELECT ID, 1, New.id FROM v_users WHERE vent_id = New.vent_id;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `claimrequeststatus`
+-- Estrutura da tabela `claim_logs`
 --
 
-CREATE TABLE `claimrequeststatus` (
+CREATE TABLE `claim_logs` (
+  `ID` int(11) UNSIGNED NOT NULL,
+  `vent_id` int(11) UNSIGNED NOT NULL,
+  `user_id` int(11) UNSIGNED NOT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `notifications_queue`
+--
+
+CREATE TABLE `notifications_queue` (
+  `ID` int(11) UNSIGNED NOT NULL,
+  `user_id` int(11) UNSIGNED NOT NULL,
+  `action_type_id` int(11) UNSIGNED NOT NULL,
+  `foreign_id` int(11) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Extraindo dados da tabela `notifications_queue`
+--
+
+INSERT INTO `notifications_queue` (`ID`, `user_id`, `action_type_id`, `foreign_id`) VALUES
+(1, 1, 1, 2),
+(2, 2, 1, 2),
+(3, 3, 1, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `notification_type`
+--
+
+CREATE TABLE `notification_type` (
+  `ID` int(11) UNSIGNED NOT NULL,
+  `name` varchar(32) COLLATE utf8mb4_bin DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Extraindo dados da tabela `notification_type`
+--
+
+INSERT INTO `notification_type` (`ID`, `name`) VALUES
+(1, 'Change Request');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `options`
+--
+
+CREATE TABLE `options` (
+  `ID` int(11) UNSIGNED NOT NULL,
+  `name` varchar(32) COLLATE utf8mb4_bin NOT NULL,
+  `group_number` int(2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Extraindo dados da tabela `options`
+--
+
+INSERT INTO `options` (`ID`, `name`, `group_number`) VALUES
+(1, 'Too sweaty', NULL),
+(2, 'Too Cold', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `requested_changes`
+--
+
+CREATE TABLE `requested_changes` (
+  `ID` int(11) UNSIGNED NOT NULL,
+  `request_id` int(11) UNSIGNED NOT NULL,
+  `option_id` int(11) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `request_status`
+--
+
+CREATE TABLE `request_status` (
   `ID` int(11) UNSIGNED NOT NULL,
   `name` varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- --------------------------------------------------------
-
 --
--- Estrutura da tabela `classes`
+-- Extraindo dados da tabela `request_status`
 --
 
-CREATE TABLE `classes` (
-  `ID` int(11) UNSIGNED NOT NULL,
-  `name` varchar(32) NOT NULL,
-  `room_id` int(11) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `class_users`
---
-
-CREATE TABLE `class_users` (
-  `ID` int(11) UNSIGNED NOT NULL,
-  `classes_id` int(11) UNSIGNED NOT NULL,
-  `users_id` int(11) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+INSERT INTO `request_status` (`ID`, `name`) VALUES
+(1, 'Pending'),
+(2, 'Approved'),
+(3, 'Denied'),
+(4, 'Canceled');
 
 -- --------------------------------------------------------
 
@@ -309,7 +419,6 @@ INSERT INTO `vents` (`ID`, `temperature`, `humidity`, `air_properties_id`, `vent
 
 CREATE TABLE `vent_groups` (
   `ID` int(11) UNSIGNED NOT NULL,
-  `name` varchar(32) NOT NULL,
   `room_id` int(11) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -317,47 +426,47 @@ CREATE TABLE `vent_groups` (
 -- Extraindo dados da tabela `vent_groups`
 --
 
-INSERT INTO `vent_groups` (`ID`, `name`, `room_id`) VALUES
-(1, 'Group 1', 2),
-(2, 'Group 1', 3),
-(3, 'Group 1', 4),
-(4, 'Group 1', 5),
-(5, 'Group 1', 6),
-(6, 'Group 1', 7),
-(7, 'Group 1', 8),
-(8, 'Group 1', 9),
-(9, 'Group 1', 10),
-(10, 'Group 1', 1),
-(11, 'Group 2', 2),
-(12, 'Group 2', 3),
-(13, 'Group 2', 4),
-(14, 'Group 2', 5),
-(15, 'Group 2', 6),
-(16, 'Group 2', 7),
-(17, 'Group 2', 8),
-(18, 'Group 2', 9),
-(19, 'Group 2', 10),
-(20, 'Group 2', 1),
-(21, 'Group 3', 2),
-(22, 'Group 3', 3),
-(23, 'Group 3', 4),
-(24, 'Group 3', 5),
-(25, 'Group 3', 6),
-(26, 'Group 3', 7),
-(27, 'Group 3', 8),
-(28, 'Group 3', 9),
-(29, 'Group 3', 10),
-(30, 'Group 3', 1),
-(31, 'Group 4', 2),
-(32, 'Group 4', 3),
-(33, 'Group 4', 4),
-(34, 'Group 4', 5),
-(35, 'Group 4', 6),
-(36, 'Group 4', 7),
-(37, 'Group 4', 8),
-(38, 'Group 4', 9),
-(39, 'Group 4', 10),
-(40, 'Group 4', 1);
+INSERT INTO `vent_groups` (`ID`, `room_id`) VALUES
+(10, 1),
+(20, 1),
+(30, 1),
+(40, 1),
+(1, 2),
+(11, 2),
+(21, 2),
+(31, 2),
+(2, 3),
+(12, 3),
+(22, 3),
+(32, 3),
+(3, 4),
+(13, 4),
+(23, 4),
+(33, 4),
+(4, 5),
+(14, 5),
+(24, 5),
+(34, 5),
+(5, 6),
+(15, 6),
+(25, 6),
+(35, 6),
+(6, 7),
+(16, 7),
+(26, 7),
+(36, 7),
+(7, 8),
+(17, 8),
+(27, 8),
+(37, 8),
+(8, 9),
+(18, 9),
+(28, 9),
+(38, 9),
+(9, 10),
+(19, 10),
+(29, 10),
+(39, 10);
 
 --
 -- Acionadores `vent_groups`
@@ -366,6 +475,19 @@ DELIMITER $$
 CREATE TRIGGER `create_group_name` BEFORE INSERT ON `vent_groups` FOR EACH ROW set new.name = CONCAT('Group ', ((SELECT count(*) from vent_groups WHERE room_id = new.room_id) +1 ))
 $$
 DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `votes`
+--
+
+CREATE TABLE `votes` (
+  `change_id` int(11) UNSIGNED NOT NULL,
+  `user_id` int(11) UNSIGNED NOT NULL,
+  `is_approved` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
@@ -419,35 +541,60 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 
 --
--- Indexes for table `claimrequests`
+-- Indexes for table `air_properties`
 --
-ALTER TABLE `claimrequests`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `student_id` (`student_id`),
-  ADD KEY `vent_id` (`vent_id`),
-  ADD KEY `status_id` (`status_id`),
-  ADD KEY `approved_by_id` (`approved_by_id`);
-
---
--- Indexes for table `claimrequeststatus`
---
-ALTER TABLE `claimrequeststatus`
+ALTER TABLE `air_properties`
   ADD PRIMARY KEY (`ID`);
 
 --
--- Indexes for table `classes`
+-- Indexes for table `change_requests`
 --
-ALTER TABLE `classes`
+ALTER TABLE `change_requests`
   ADD PRIMARY KEY (`ID`),
-  ADD KEY `room_id` (`room_id`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `vent_id` (`vent_id`),
+  ADD KEY `status_id` (`status_id`);
 
 --
--- Indexes for table `class_users`
+-- Indexes for table `claim_logs`
 --
-ALTER TABLE `class_users`
+ALTER TABLE `claim_logs`
   ADD PRIMARY KEY (`ID`),
-  ADD KEY `classes_id` (`classes_id`),
-  ADD KEY `users_id` (`users_id`);
+  ADD KEY `vent_id` (`vent_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `notifications_queue`
+--
+ALTER TABLE `notifications_queue`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `notification_type`
+--
+ALTER TABLE `notification_type`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `options`
+--
+ALTER TABLE `options`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `requested_changes`
+--
+ALTER TABLE `requested_changes`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `option_id` (`option_id`),
+  ADD KEY `request_id` (`request_id`);
+
+--
+-- Indexes for table `request_status`
+--
+ALTER TABLE `request_status`
+  ADD PRIMARY KEY (`ID`);
 
 --
 -- Indexes for table `rooms`
@@ -484,32 +631,63 @@ ALTER TABLE `vent_groups`
   ADD KEY `room_id` (`room_id`);
 
 --
+-- Indexes for table `votes`
+--
+ALTER TABLE `votes`
+  ADD PRIMARY KEY (`change_id`,`user_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT for table `claimrequests`
+-- AUTO_INCREMENT for table `air_properties`
 --
-ALTER TABLE `claimrequests`
+ALTER TABLE `air_properties`
   MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `claimrequeststatus`
+-- AUTO_INCREMENT for table `change_requests`
 --
-ALTER TABLE `claimrequeststatus`
+ALTER TABLE `change_requests`
+  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `claim_logs`
+--
+ALTER TABLE `claim_logs`
   MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `classes`
+-- AUTO_INCREMENT for table `notifications_queue`
 --
-ALTER TABLE `classes`
+ALTER TABLE `notifications_queue`
+  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `notification_type`
+--
+ALTER TABLE `notification_type`
+  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `options`
+--
+ALTER TABLE `options`
+  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `requested_changes`
+--
+ALTER TABLE `requested_changes`
   MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `class_users`
+-- AUTO_INCREMENT for table `request_status`
 --
-ALTER TABLE `class_users`
-  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+ALTER TABLE `request_status`
+  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `rooms`
@@ -546,26 +724,32 @@ ALTER TABLE `vent_groups`
 --
 
 --
--- Limitadores para a tabela `claimrequests`
+-- Limitadores para a tabela `change_requests`
 --
-ALTER TABLE `claimrequests`
-  ADD CONSTRAINT `claimrequests_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `users` (`ID`),
-  ADD CONSTRAINT `claimrequests_ibfk_2` FOREIGN KEY (`vent_id`) REFERENCES `vents` (`ID`),
-  ADD CONSTRAINT `claimrequests_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `claimrequeststatus` (`ID`),
-  ADD CONSTRAINT `claimrequests_ibfk_4` FOREIGN KEY (`approved_by_id`) REFERENCES `users` (`ID`);
+ALTER TABLE `change_requests`
+  ADD CONSTRAINT `change_requests_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`ID`),
+  ADD CONSTRAINT `change_requests_ibfk_2` FOREIGN KEY (`vent_id`) REFERENCES `vents` (`ID`),
+  ADD CONSTRAINT `change_requests_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `request_status` (`ID`);
 
 --
--- Limitadores para a tabela `classes`
+-- Limitadores para a tabela `claim_logs`
 --
-ALTER TABLE `classes`
-  ADD CONSTRAINT `classes_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`ID`);
+ALTER TABLE `claim_logs`
+  ADD CONSTRAINT `claim_logs_ibfk_1` FOREIGN KEY (`vent_id`) REFERENCES `vents` (`ID`),
+  ADD CONSTRAINT `claim_logs_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`ID`);
 
 --
--- Limitadores para a tabela `class_users`
+-- Limitadores para a tabela `notifications_queue`
 --
-ALTER TABLE `class_users`
-  ADD CONSTRAINT `class_users_ibfk_1` FOREIGN KEY (`classes_id`) REFERENCES `classes` (`ID`),
-  ADD CONSTRAINT `class_users_ibfk_2` FOREIGN KEY (`users_id`) REFERENCES `users` (`ID`);
+ALTER TABLE `notifications_queue`
+  ADD CONSTRAINT `notifications_queue_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`ID`);
+
+--
+-- Limitadores para a tabela `requested_changes`
+--
+ALTER TABLE `requested_changes`
+  ADD CONSTRAINT `requested_changes_ibfk_1` FOREIGN KEY (`option_id`) REFERENCES `options` (`ID`),
+  ADD CONSTRAINT `requested_changes_ibfk_2` FOREIGN KEY (`request_id`) REFERENCES `change_requests` (`ID`);
 
 --
 -- Limitadores para a tabela `users`
@@ -585,6 +769,14 @@ ALTER TABLE `vents`
 --
 ALTER TABLE `vent_groups`
   ADD CONSTRAINT `vent_groups_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`ID`);
+
+--
+-- Limitadores para a tabela `votes`
+--
+ALTER TABLE `votes`
+  ADD CONSTRAINT `votes_ibfk_1` FOREIGN KEY (`change_id`) REFERENCES `requested_changes` (`ID`),
+  ADD CONSTRAINT `votes_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`ID`),
+  ADD CONSTRAINT `votes_ibfk_3` FOREIGN KEY (`change_id`) REFERENCES `requested_changes` (`ID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
