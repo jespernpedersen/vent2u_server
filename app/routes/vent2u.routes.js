@@ -7,7 +7,7 @@ module.exports = app => {
     require("./change.routes")(app);
     require("./presets.routes")(app);
     require("./claims.routes")(app);
-    require("./logins.routes")(app);
     require("./claimRequestStatus.routes")(app);
     require("./users.routes")(app);
+    require("./login.routes")(app)
 };
