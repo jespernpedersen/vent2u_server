@@ -1,36 +1,24 @@
-const { classes } = require("../models");
 const db = require("../models");
-const Classes = db.classes;
-const Op = db.Sequelize.Op;
 
-exports.get = (req, res) => {
 
-    condition = req.params.id ? {ID: req.params.id} : null;
+exports.login = (req, res) => {
 
-    Classes.findAll({ where: condition })
-    .then( data => {
+    const Sequelize = require("sequelize");
+    const sequelize = new Sequelize('vent2u', 'manager', ']SgtSF~BG)8WN^%p', {
+        host: "localhost",
+        dialect: "mysql",
+        port: 3306,
+        syncOnAssociation: false
+    });
+    const query = `call login(?, ?)`;
+
+    sequelize.query(query, {
+        replacements: [req.body.email, req.body.password],
+        type: sequelize.QueryTypes.SELECT
+      }).then(data => {
         res.send(data);
-    })
-    .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while retrieving tutorials."
-        });
-      });
-}
-
-exports.getFromRoom = (req, res) => {
-  
-  condition = Req.params.id ? {room_id: req.params.id} : null 
-
-  Classes.findAll({ where: condition })
-    .then( data => {
-        res.send(data);
-    })
-    .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while retrieving tutorials."
-        });
-      });
+      })
+      .catch(err => {
+        res.status(500).send(err);
+    });
 }

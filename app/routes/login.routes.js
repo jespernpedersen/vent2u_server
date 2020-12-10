@@ -6,9 +6,7 @@ module.exports = app => {
 
     const login = require("../controllers/login.controller");
 
-    router.post('/login', login.post);
-    router.post('/logout', login.post);
-    
+    router.post('/login', login.login);
 
     app.use(settings.PATH , router);
 }
