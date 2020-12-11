@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.5
+-- version 4.9.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Dec 10, 2020 at 08:28 AM
--- Server version: 5.7.24
--- PHP Version: 7.4.1
+-- Host: 127.0.0.1
+-- Generation Time: Dec 11, 2020 at 04:02 PM
+-- Server version: 10.4.8-MariaDB
+-- PHP Version: 7.3.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -64,23 +64,41 @@ CREATE TABLE `change_requests` (
   `ID` int(11) UNSIGNED NOT NULL,
   `user_id` int(11) UNSIGNED NOT NULL,
   `vent_id` int(11) UNSIGNED NOT NULL,
-  `status_id` int(11) UNSIGNED NOT NULL,
-  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `status_id` int(11) UNSIGNED NOT NULL DEFAULT 1,
+  `user_count` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `change_requests`
 --
 
-INSERT INTO `change_requests` (`ID`, `user_id`, `vent_id`, `status_id`, `time`) VALUES
-(2, 1, 5, 1, '2020-12-08 10:54:48');
+INSERT INTO `change_requests` (`ID`, `user_id`, `vent_id`, `status_id`, `user_count`, `time`) VALUES
+(1, 1, 5, 1, 3, '2020-12-10 15:50:01'),
+(3, 1, 1, 1, 0, '2020-12-10 16:26:10'),
+(4, 1, 1, 0, 0, '2020-12-10 19:27:37'),
+(5, 1, 1, 0, 0, '2020-12-10 19:27:46'),
+(6, 1, 1, 0, 0, '2020-12-10 19:28:30'),
+(7, 1, 1, 0, 0, '2020-12-10 19:28:51'),
+(8, 1, 1, 0, 0, '2020-12-10 19:29:27'),
+(9, 1, 1, 0, 0, '2020-12-10 19:29:43');
 
 --
 -- Triggers `change_requests`
 --
 DELIMITER $$
+CREATE TRIGGER `countUsers` BEFORE INSERT ON `change_requests` FOR EACH ROW BEGIN
+SET @userCount = 0;
+SELECT count(ID) INTO @userCount 
+FROM users 
+WHERE vent_id = New.vent_id;
+SET New.user_count = @userCount;
+END
+$$
+DELIMITER ;
+DELIMITER $$
 CREATE TRIGGER `notify_change_request` AFTER INSERT ON `change_requests` FOR EACH ROW BEGIN
-    INSERT INTO notifications_queue(user_id, action_type_id, foreign_id) SELECT ID, 1, New.id FROM v_users WHERE vent_id = New.vent_id;
+    INSERT INTO notifications_queue(user_id, action_type_id, foreign_id) SELECT ID, 1, New.id FROM v_users WHERE vent_id = New.vent_id AND ID != New.user_id;
 END
 $$
 DELIMITER ;
@@ -95,7 +113,7 @@ CREATE TABLE `claim_logs` (
   `ID` int(11) UNSIGNED NOT NULL,
   `vent_id` int(11) UNSIGNED NOT NULL,
   `user_id` int(11) UNSIGNED NOT NULL,
-  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
@@ -116,9 +134,8 @@ CREATE TABLE `notifications_queue` (
 --
 
 INSERT INTO `notifications_queue` (`ID`, `user_id`, `action_type_id`, `foreign_id`) VALUES
-(1, 1, 1, 2),
-(2, 2, 1, 2),
-(3, 3, 1, 2);
+(1, 2, 2, 1),
+(2, 3, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -136,7 +153,8 @@ CREATE TABLE `notification_type` (
 --
 
 INSERT INTO `notification_type` (`ID`, `name`) VALUES
-(1, 'Change Request');
+(1, 'Change Request'),
+(2, 'Vote');
 
 -- --------------------------------------------------------
 
@@ -170,6 +188,15 @@ CREATE TABLE `requested_changes` (
   `option_id` int(11) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
+--
+-- Dumping data for table `requested_changes`
+--
+
+INSERT INTO `requested_changes` (`ID`, `request_id`, `option_id`) VALUES
+(1, 1, 1),
+(2, 3, 1),
+(3, 3, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -200,7 +227,7 @@ INSERT INTO `request_status` (`ID`, `name`) VALUES
 CREATE TABLE `rooms` (
   `ID` int(11) UNSIGNED NOT NULL,
   `name` varchar(32) NOT NULL,
-  `grid_size` int(1) NOT NULL DEFAULT '1'
+  `grid_size` int(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -231,7 +258,7 @@ CREATE TABLE `users` (
   `email` varchar(32) NOT NULL,
   `password` varchar(256) NOT NULL,
   `vent_id` int(11) UNSIGNED DEFAULT NULL,
-  `logged_in` tinyint(1) NOT NULL DEFAULT '0',
+  `logged_in` tinyint(1) NOT NULL DEFAULT 0,
   `user_role_id` int(3) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -487,9 +514,32 @@ INSERT INTO `vent_groups` (`ID`, `room_id`) VALUES
 CREATE TABLE `votes` (
   `change_id` int(11) UNSIGNED NOT NULL,
   `user_id` int(11) UNSIGNED NOT NULL,
-  `is_approved` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
-  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `is_approved` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Dumping data for table `votes`
+--
+
+INSERT INTO `votes` (`change_id`, `user_id`, `is_approved`, `time`) VALUES
+(1, 1, 0, '2020-12-10 16:16:38');
+
+--
+-- Triggers `votes`
+--
+DELIMITER $$
+CREATE TRIGGER `voteNotification` BEFORE INSERT ON `votes` FOR EACH ROW BEGIN
+SET @vent_id = 0;
+SELECT vent_id INTO @vent_id FROM change_requests WHERE ID = New.change_id;
+INSERT INTO notifications_queue (user_id, action_type_id, foreign_id)
+SELECT ID, 2, New.change_id 
+FROM users 
+WHERE vent_id = @vent_id
+AND ID != New.user_id;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -527,7 +577,7 @@ CREATE TABLE `v_vents` (
 --
 DROP TABLE IF EXISTS `v_users`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_users`  AS  select `a`.`ID` AS `ID`,`a`.`name` AS `name`,`a`.`vent_id` AS `vent_id`,`d`.`room_id` AS `room_id`,`a`.`user_role_id` AS `user_role_id`,`b`.`name` AS `user_role`,`a`.`logged_in` AS `logged_in` from (((`users` `a` left join `user_roles` `b` on((`a`.`user_role_id` = `b`.`ID`))) left join `vents` `c` on((`a`.`vent_id` = `c`.`ID`))) left join `vent_groups` `d` on((`c`.`vent_group_id` = `d`.`ID`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_users`  AS  select `a`.`ID` AS `ID`,`a`.`name` AS `name`,`a`.`vent_id` AS `vent_id`,`d`.`room_id` AS `room_id`,`a`.`user_role_id` AS `user_role_id`,`b`.`name` AS `user_role`,`a`.`logged_in` AS `logged_in` from (((`users` `a` left join `user_roles` `b` on(`a`.`user_role_id` = `b`.`ID`)) left join `vents` `c` on(`a`.`vent_id` = `c`.`ID`)) left join `vent_groups` `d` on(`c`.`vent_group_id` = `d`.`ID`)) ;
 
 -- --------------------------------------------------------
 
@@ -536,7 +586,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `v_vents`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_vents`  AS  select `a`.`ID` AS `ID`,`a`.`vent_group_id` AS `vent_group_id`,`b`.`room_id` AS `room_id`,(select count(0) from `users` where (`users`.`vent_id` = `a`.`ID`)) AS `user_count` from (`vents` `a` left join `vent_groups` `b` on((`a`.`vent_group_id` = `b`.`ID`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_vents`  AS  select `a`.`ID` AS `ID`,`a`.`vent_group_id` AS `vent_group_id`,`b`.`room_id` AS `room_id`,(select count(0) from `users` where `users`.`vent_id` = `a`.`ID`) AS `user_count` from (`vents` `a` left join `vent_groups` `b` on(`a`.`vent_group_id` = `b`.`ID`)) ;
 
 --
 -- Indexes for dumped tables
@@ -611,6 +661,34 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`ID`),
   ADD KEY `user_role_id` (`user_role_id`),
   ADD KEY `vent_id` (`vent_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `change_requests`
+--
+ALTER TABLE `change_requests`
+  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `notifications_queue`
+--
+ALTER TABLE `notifications_queue`
+  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `notification_type`
+--
+ALTER TABLE `notification_type`
+  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `requested_changes`
+--
+ALTER TABLE `requested_changes`
+  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

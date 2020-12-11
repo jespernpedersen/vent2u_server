@@ -17,7 +17,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.TIME
         }
     }, {
-        timestamps: true
+        timestamps: false
     });
 
     return change_requests;

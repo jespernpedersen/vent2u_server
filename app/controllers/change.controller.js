@@ -11,11 +11,15 @@ exports.post = (req, res) => {
         vent_id: 1,
         status_id: 0
     }
-    ChangeRequests.create(RequestGroup, { isNewRecord: true }).complete(function(err, result) {
+    ChangeRequests.create(RequestGroup, { isNewRecord: true }).then(function(err, result) {
             if (err) {
-                callback(0);
+                console.log(err);
+                // callback(0);
             } else {
                 callback(result.id); // This is generated primary key
+                req.body.forEach((item) => {
+                    console.log(item);
+                })
             }
         })
         /*

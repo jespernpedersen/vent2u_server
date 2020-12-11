@@ -17,6 +17,7 @@ db.vents = require("./vent.model.js")(sequelize, Sequelize);
 db.classes = require("./class.model.js")(sequelize, Sequelize);
 db.presets = require("./preset.model.js")(sequelize, Sequelize);
 db.claimRequests = require("./claim.model.js")(sequelize, Sequelize);
+db.change_requests = require("./change_requests.model.js")(sequelize, Sequelize);
 db.claimRequestStatus = require("./claimRequestStatus.model.js")(sequelize, Sequelize);
 db.requested_changes = require("./requested_changes.model")(sequelize, Sequelize);
 
