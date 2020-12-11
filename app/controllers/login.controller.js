@@ -13,12 +13,12 @@ exports.login = (req, res) => {
     const query = `call login(?, ?)`;
 
     sequelize.query(query, {
-        replacements: [req.body.email, req.body.password],
-        type: sequelize.QueryTypes.SELECT
-      }).then(data => {
-        res.send(data);
-      })
-      .catch(err => {
-        res.status(500).send(err);
-    });
+            replacements: [req.body.email, req.body.password],
+            type: sequelize.QueryTypes.SELECT
+        }).then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        });
 }

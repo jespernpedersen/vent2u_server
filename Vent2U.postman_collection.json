@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "19b9b4ab-603f-4cad-9172-0a685f9bd180",
+		"_postman_id": "491ae9e7-456e-4f3b-aa83-39af6111a43f",
 		"name": "Vent2U Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -369,6 +369,52 @@
 								"vents",
 								"user",
 								"6"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Change (Request)",
+			"item": [
+				{
+					"name": "Post Change Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/vent2u/change",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"vent2u",
+								"change"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Change Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/vent2u/change",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"vent2u",
+								"change"
 							]
 						}
 					},
