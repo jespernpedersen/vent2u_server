@@ -19,18 +19,18 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `vent2u`
+-- Database: vent2u
 --
 
 DELIMITER $$
 --
 -- Procedures
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `GetNotifications` (IN `userId` INT(11) UNSIGNED)  BEGIN
+CREATE PROCEDURE GetNotifications (IN userId integer UNSIGNED)  BEGIN
 	SELECT * from notifications_queue WHERE user_id = userId;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `login` (IN `username` VARCHAR(42), IN `userpassword` VARCHAR(64))  begin 
+CREATE PROCEDURE login (IN username VARCHAR(42), IN userpassword VARCHAR(64))  begin 
 set @loggedin = 0;
 SELECT COUNT(*) from users where users.email=username and users.password= userpassword into @loggedin;
 if @loggedin = 1 
@@ -45,35 +45,35 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `air_properties`
+-- Table structure for table air_properties
 --
 
-CREATE TABLE `air_properties` (
-  `ID` int(11) UNSIGNED NOT NULL,
-  `speed` int(2) DEFAULT NULL,
-  `quality` int(3) DEFAULT NULL
+CREATE TABLE air_properties (
+  ID integer UNSIGNED NOT NULL,
+  speed integer DEFAULT NULL,
+  quality integer DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `change_requests`
+-- Table structure for table change_requests
 --
 
-CREATE TABLE `change_requests` (
-  `ID` int(11) UNSIGNED NOT NULL,
-  `user_id` int(11) UNSIGNED NOT NULL,
-  `vent_id` int(11) UNSIGNED NOT NULL,
-  `status_id` int(11) UNSIGNED NOT NULL DEFAULT 1,
-  `user_count` int(10) UNSIGNED NOT NULL DEFAULT 0,
-  `time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+CREATE TABLE change_requests (
+  ID integer UNSIGNED NOT NULL,
+  user_id integer UNSIGNED NOT NULL,
+  vent_id integer UNSIGNED NOT NULL,
+  status_id integer UNSIGNED NOT NULL DEFAULT 1,
+  user_count integer UNSIGNED NOT NULL DEFAULT 0,
+  time timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
--- Dumping data for table `change_requests`
+-- Dumping data for table change_requests
 --
 
-INSERT INTO `change_requests` (`ID`, `user_id`, `vent_id`, `status_id`, `user_count`, `time`) VALUES
+INSERT INTO change_requests (ID, user_id, vent_id, status_id, user_count, time) VALUES
 (1, 1, 5, 1, 3, '2020-12-10 15:50:01'),
 (3, 1, 1, 1, 0, '2020-12-10 16:26:10'),
 (4, 1, 1, 0, 0, '2020-12-10 19:27:37'),
@@ -84,10 +84,10 @@ INSERT INTO `change_requests` (`ID`, `user_id`, `vent_id`, `status_id`, `user_co
 (9, 1, 1, 0, 0, '2020-12-10 19:29:43');
 
 --
--- Triggers `change_requests`
+-- Triggers change_requests
 --
 DELIMITER $$
-CREATE TRIGGER `countUsers` BEFORE INSERT ON `change_requests` FOR EACH ROW BEGIN
+CREATE TRIGGER countUsers BEFORE INSERT ON change_requests FOR EACH ROW BEGIN
 SET @userCount = 0;
 SELECT count(ID) INTO @userCount 
 FROM users 
@@ -97,7 +97,7 @@ END
 $$
 DELIMITER ;
 DELIMITER $$
-CREATE TRIGGER `notify_change_request` AFTER INSERT ON `change_requests` FOR EACH ROW BEGIN
+CREATE TRIGGER notify_change_request AFTER INSERT ON change_requests FOR EACH ROW BEGIN
     INSERT INTO notifications_queue(user_id, action_type_id, foreign_id) SELECT ID, 1, New.id FROM v_users WHERE vent_id = New.vent_id AND ID != New.user_id;
 END
 $$
@@ -106,93 +106,93 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `claim_logs`
+-- Table structure for table claim_logs
 --
 
-CREATE TABLE `claim_logs` (
-  `ID` int(11) UNSIGNED NOT NULL,
-  `vent_id` int(11) UNSIGNED NOT NULL,
-  `user_id` int(11) UNSIGNED NOT NULL,
-  `time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+CREATE TABLE claim_logs (
+  ID integer UNSIGNED NOT NULL,
+  vent_id integer UNSIGNED NOT NULL,
+  user_id integer UNSIGNED NOT NULL,
+  time timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `notifications_queue`
+-- Table structure for table notifications_queue
 --
 
-CREATE TABLE `notifications_queue` (
-  `ID` int(11) UNSIGNED NOT NULL,
-  `user_id` int(11) UNSIGNED NOT NULL,
-  `action_type_id` int(11) UNSIGNED NOT NULL,
-  `foreign_id` int(11) UNSIGNED NOT NULL
+CREATE TABLE notifications_queue (
+  ID integer UNSIGNED NOT NULL,
+  user_id integer UNSIGNED NOT NULL,
+  action_type_id integer UNSIGNED NOT NULL,
+  foreign_id integer UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
--- Dumping data for table `notifications_queue`
+-- Dumping data for table notifications_queue
 --
 
-INSERT INTO `notifications_queue` (`ID`, `user_id`, `action_type_id`, `foreign_id`) VALUES
+INSERT INTO notifications_queue (ID, user_id, action_type_id, foreign_id) VALUES
 (1, 2, 2, 1),
 (2, 3, 2, 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `notification_type`
+-- Table structure for table notification_type
 --
 
-CREATE TABLE `notification_type` (
-  `ID` int(11) UNSIGNED NOT NULL,
-  `name` varchar(32) COLLATE utf8mb4_bin DEFAULT NULL
+CREATE TABLE notification_type (
+  ID integer UNSIGNED NOT NULL,
+  name varchar(32) COLLATE utf8mb4_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
--- Dumping data for table `notification_type`
+-- Dumping data for table notification_type
 --
 
-INSERT INTO `notification_type` (`ID`, `name`) VALUES
+INSERT INTO notification_type (ID, name) VALUES
 (1, 'Change Request'),
 (2, 'Vote');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `options`
+-- Table structure for table options
 --
 
-CREATE TABLE `options` (
-  `ID` int(11) UNSIGNED NOT NULL,
-  `name` varchar(32) COLLATE utf8mb4_bin NOT NULL,
-  `group_number` int(2) DEFAULT NULL
+CREATE TABLE options (
+  ID integer UNSIGNED NOT NULL,
+  name varchar(32) COLLATE utf8mb4_bin NOT NULL,
+  group_number integer DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
--- Dumping data for table `options`
+-- Dumping data for table options
 --
 
-INSERT INTO `options` (`ID`, `name`, `group_number`) VALUES
+INSERT INTO options (ID, name, group_number) VALUES
 (1, 'Too sweaty', NULL),
 (2, 'Too Cold', 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `requested_changes`
+-- Table structure for table requested_changes
 --
 
-CREATE TABLE `requested_changes` (
-  `ID` int(11) UNSIGNED NOT NULL,
-  `request_id` int(11) UNSIGNED NOT NULL,
-  `option_id` int(11) UNSIGNED NOT NULL
+CREATE TABLE requested_changes (
+  ID integer UNSIGNED NOT NULL,
+  request_id integer UNSIGNED NOT NULL,
+  option_id integer UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
--- Dumping data for table `requested_changes`
+-- Dumping data for table requested_changes
 --
 
-INSERT INTO `requested_changes` (`ID`, `request_id`, `option_id`) VALUES
+INSERT INTO requested_changes (ID, request_id, option_id) VALUES
 (1, 1, 1),
 (2, 3, 1),
 (3, 3, 2);
@@ -200,19 +200,19 @@ INSERT INTO `requested_changes` (`ID`, `request_id`, `option_id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `request_status`
+-- Table structure for table request_status
 --
 
-CREATE TABLE `request_status` (
-  `ID` int(11) UNSIGNED NOT NULL,
-  `name` varchar(32) NOT NULL
+CREATE TABLE request_status (
+  ID integer UNSIGNED NOT NULL,
+  name varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `request_status`
+-- Dumping data for table request_status
 --
 
-INSERT INTO `request_status` (`ID`, `name`) VALUES
+INSERT INTO request_status (ID, name) VALUES
 (1, 'Pending'),
 (2, 'Approved'),
 (3, 'Denied'),
@@ -221,20 +221,20 @@ INSERT INTO `request_status` (`ID`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `rooms`
+-- Table structure for table rooms
 --
 
-CREATE TABLE `rooms` (
-  `ID` int(11) UNSIGNED NOT NULL,
-  `name` varchar(32) NOT NULL,
-  `grid_size` int(1) NOT NULL DEFAULT 1
+CREATE TABLE rooms (
+  ID integer UNSIGNED NOT NULL,
+  name varchar(32) NOT NULL,
+  grid_size integer NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `rooms`
+-- Dumping data for table rooms
 --
 
-INSERT INTO `rooms` (`ID`, `name`, `grid_size`) VALUES
+INSERT INTO rooms (ID, name, grid_size) VALUES
 (1, 'Calvi Risorta', 2),
 (2, 'Limal', 3),
 (3, 'Chapadinha', 3),
@@ -249,24 +249,24 @@ INSERT INTO `rooms` (`ID`, `name`, `grid_size`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Table structure for table users
 --
 
-CREATE TABLE `users` (
-  `ID` int(11) UNSIGNED NOT NULL,
-  `name` varchar(64) NOT NULL,
-  `email` varchar(32) NOT NULL,
-  `password` varchar(256) NOT NULL,
-  `vent_id` int(11) UNSIGNED DEFAULT NULL,
-  `logged_in` tinyint(1) NOT NULL DEFAULT 0,
-  `user_role_id` int(3) UNSIGNED NOT NULL
+CREATE TABLE users (
+  ID integer UNSIGNED NOT NULL,
+  name varchar(64) NOT NULL,
+  email varchar(32) NOT NULL,
+  password varchar(256) NOT NULL,
+  vent_id integer UNSIGNED DEFAULT NULL,
+  logged_in tinyinteger NOT NULL DEFAULT 0,
+  user_role_id integer UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `users`
+-- Dumping data for table users
 --
 
-INSERT INTO `users` (`ID`, `name`, `email`, `password`, `vent_id`, `logged_in`, `user_role_id`) VALUES
+INSERT INTO users (ID, name, email, password, vent_id, logged_in, user_role_id) VALUES
 (1, 'Keith', 'Proin@nullaanteiaculis.org', 'SWM94EHF6PT', 5, 1, 3),
 (2, 'Nash', 'Morbi.quis@imperdietdictummagna.', 'QRS57QLS0CD', 5, 0, 3),
 (3, 'Jakeem', 'ut@id.co.uk', 'CEZ19IST2HT', 5, 0, 3),
@@ -371,19 +371,19 @@ INSERT INTO `users` (`ID`, `name`, `email`, `password`, `vent_id`, `logged_in`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_roles`
+-- Table structure for table user_roles
 --
 
-CREATE TABLE `user_roles` (
-  `ID` int(11) UNSIGNED NOT NULL,
-  `name` varchar(32) NOT NULL
+CREATE TABLE user_roles (
+  ID integer UNSIGNED NOT NULL,
+  name varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `user_roles`
+-- Dumping data for table user_roles
 --
 
-INSERT INTO `user_roles` (`ID`, `name`) VALUES
+INSERT INTO user_roles (ID, name) VALUES
 (1, 'Student'),
 (2, 'Teacher'),
 (3, 'Administrator');
@@ -391,22 +391,22 @@ INSERT INTO `user_roles` (`ID`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `vents`
+-- Table structure for table vents
 --
 
-CREATE TABLE `vents` (
-  `ID` int(11) UNSIGNED NOT NULL,
-  `temperature` int(2) DEFAULT NULL,
-  `humidity` int(3) DEFAULT NULL,
-  `air_properties_id` int(11) UNSIGNED NOT NULL,
-  `vent_group_id` int(11) UNSIGNED DEFAULT NULL
+CREATE TABLE vents (
+  ID integer UNSIGNED NOT NULL,
+  temperature integer DEFAULT NULL,
+  humidity integer DEFAULT NULL,
+  air_properties_id integer UNSIGNED NOT NULL,
+  vent_group_id integer UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
--- Dumping data for table `vents`
+-- Dumping data for table vents
 --
 
-INSERT INTO `vents` (`ID`, `temperature`, `humidity`, `air_properties_id`, `vent_group_id`) VALUES
+INSERT INTO vents (ID, temperature, humidity, air_properties_id, vent_group_id) VALUES
 (1, 21, 48, 0, 1),
 (2, 24, 58, 0, 2),
 (3, 17, 53, 0, 3),
@@ -451,19 +451,19 @@ INSERT INTO `vents` (`ID`, `temperature`, `humidity`, `air_properties_id`, `vent
 -- --------------------------------------------------------
 
 --
--- Table structure for table `vent_groups`
+-- Table structure for table vent_groups
 --
 
-CREATE TABLE `vent_groups` (
-  `ID` int(11) UNSIGNED NOT NULL,
-  `room_id` int(11) UNSIGNED NOT NULL
+CREATE TABLE vent_groups (
+  ID integer UNSIGNED NOT NULL,
+  room_id integer UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `vent_groups`
+-- Dumping data for table vent_groups
 --
 
-INSERT INTO `vent_groups` (`ID`, `room_id`) VALUES
+INSERT INTO vent_groups (ID, room_id) VALUES
 (10, 1),
 (20, 1),
 (30, 1),
@@ -508,28 +508,28 @@ INSERT INTO `vent_groups` (`ID`, `room_id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `votes`
+-- Table structure for table votes
 --
 
-CREATE TABLE `votes` (
-  `change_id` int(11) UNSIGNED NOT NULL,
-  `user_id` int(11) UNSIGNED NOT NULL,
-  `is_approved` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
-  `time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+CREATE TABLE votes (
+  change_id integer UNSIGNED NOT NULL,
+  user_id integer UNSIGNED NOT NULL,
+  is_approved tinyinteger UNSIGNED NOT NULL DEFAULT 0,
+  time timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
--- Dumping data for table `votes`
+-- Dumping data for table votes
 --
 
-INSERT INTO `votes` (`change_id`, `user_id`, `is_approved`, `time`) VALUES
+INSERT INTO votes (change_id, user_id, is_approved, time) VALUES
 (1, 1, 0, '2020-12-10 16:16:38');
 
 --
--- Triggers `votes`
+-- Triggers votes
 --
 DELIMITER $$
-CREATE TRIGGER `voteNotification` BEFORE INSERT ON `votes` FOR EACH ROW BEGIN
+CREATE TRIGGER voteNotification BEFORE INSERT ON votes FOR EACH ROW BEGIN
 SET @vent_id = 0;
 SELECT vent_id INTO @vent_id FROM change_requests WHERE ID = New.change_id;
 INSERT INTO notifications_queue (user_id, action_type_id, foreign_id)
@@ -544,151 +544,151 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Stand-in structure for view `v_users`
+-- Stand-in structure for view v_users
 -- (See below for the actual view)
 --
-CREATE TABLE `v_users` (
-`ID` int(11) unsigned
-,`name` varchar(64)
-,`vent_id` int(11) unsigned
-,`room_id` int(11) unsigned
-,`user_role_id` int(3) unsigned
-,`user_role` varchar(32)
-,`logged_in` tinyint(1)
+CREATE TABLE v_users (
+ID integer unsigned
+,name varchar(64)
+,vent_id integer unsigned
+,room_id integer unsigned
+,user_role_id integer unsigned
+,user_role varchar(32)
+,logged_in tinyinteger
 );
 
 -- --------------------------------------------------------
 
 --
--- Stand-in structure for view `v_vents`
+-- Stand-in structure for view v_vents
 -- (See below for the actual view)
 --
-CREATE TABLE `v_vents` (
-`ID` int(11) unsigned
-,`vent_group_id` int(11) unsigned
-,`room_id` int(11) unsigned
-,`user_count` bigint(21)
+CREATE TABLE v_vents (
+ID integer unsigned
+,vent_group_id integer unsigned
+,room_id integer unsigned
+,user_count bigint(21)
 );
 
 -- --------------------------------------------------------
 
 --
--- Structure for view `v_users`
+-- Structure for view v_users
 --
-DROP TABLE IF EXISTS `v_users`;
+DROP TABLE IF EXISTS v_users;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_users`  AS  select `a`.`ID` AS `ID`,`a`.`name` AS `name`,`a`.`vent_id` AS `vent_id`,`d`.`room_id` AS `room_id`,`a`.`user_role_id` AS `user_role_id`,`b`.`name` AS `user_role`,`a`.`logged_in` AS `logged_in` from (((`users` `a` left join `user_roles` `b` on(`a`.`user_role_id` = `b`.`ID`)) left join `vents` `c` on(`a`.`vent_id` = `c`.`ID`)) left join `vent_groups` `d` on(`c`.`vent_group_id` = `d`.`ID`)) ;
+CREATE VIEW v_users  AS  select a.ID AS ID,a.name AS name,a.vent_id AS vent_id,d.room_id AS room_id,a.user_role_id AS user_role_id,b.name AS user_role,a.logged_in AS logged_in from (((users a left join user_roles b on(a.user_role_id = b.ID)) left join vents c on(a.vent_id = c.ID)) left join vent_groups d on(c.vent_group_id = d.ID)) ;
 
 -- --------------------------------------------------------
 
 --
--- Structure for view `v_vents`
+-- Structure for view v_vents
 --
-DROP TABLE IF EXISTS `v_vents`;
+DROP TABLE IF EXISTS v_vents;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_vents`  AS  select `a`.`ID` AS `ID`,`a`.`vent_group_id` AS `vent_group_id`,`b`.`room_id` AS `room_id`,(select count(0) from `users` where `users`.`vent_id` = `a`.`ID`) AS `user_count` from (`vents` `a` left join `vent_groups` `b` on(`a`.`vent_group_id` = `b`.`ID`)) ;
+CREATE VIEW v_vents  AS  select a.ID AS ID,a.vent_group_id AS vent_group_id,b.room_id AS room_id,(select count(0) from users where users.vent_id = a.ID) AS user_count from (vents a left join vent_groups b on(a.vent_group_id = b.ID)) ;
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `air_properties`
+-- Indexes for table air_properties
 --
-ALTER TABLE `air_properties`
-  ADD PRIMARY KEY (`ID`);
+ALTER TABLE air_properties
+  ADD PRIMARY KEY (ID);
 
 --
--- Indexes for table `change_requests`
+-- Indexes for table change_requests
 --
-ALTER TABLE `change_requests`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `vent_id` (`vent_id`),
-  ADD KEY `status_id` (`status_id`);
+ALTER TABLE change_requests
+  ADD PRIMARY KEY (ID),
+  ADD KEY user_id (user_id),
+  ADD KEY vent_id (vent_id),
+  ADD KEY status_id (status_id);
 
 --
--- Indexes for table `claim_logs`
+-- Indexes for table claim_logs
 --
-ALTER TABLE `claim_logs`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `vent_id` (`vent_id`),
-  ADD KEY `user_id` (`user_id`);
+ALTER TABLE claim_logs
+  ADD PRIMARY KEY (ID),
+  ADD KEY vent_id (vent_id),
+  ADD KEY user_id (user_id);
 
 --
--- Indexes for table `notifications_queue`
+-- Indexes for table notifications_queue
 --
-ALTER TABLE `notifications_queue`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `user_id` (`user_id`);
+ALTER TABLE notifications_queue
+  ADD PRIMARY KEY (ID),
+  ADD KEY user_id (user_id);
 
 --
--- Indexes for table `notification_type`
+-- Indexes for table notification_type
 --
-ALTER TABLE `notification_type`
-  ADD PRIMARY KEY (`ID`);
+ALTER TABLE notification_type
+  ADD PRIMARY KEY (ID);
 
 --
--- Indexes for table `options`
+-- Indexes for table options
 --
-ALTER TABLE `options`
-  ADD PRIMARY KEY (`ID`);
+ALTER TABLE options
+  ADD PRIMARY KEY (ID);
 
 --
--- Indexes for table `requested_changes`
+-- Indexes for table requested_changes
 --
-ALTER TABLE `requested_changes`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `option_id` (`option_id`),
-  ADD KEY `request_id` (`request_id`);
+ALTER TABLE requested_changes
+  ADD PRIMARY KEY (ID),
+  ADD KEY option_id (option_id),
+  ADD KEY request_id (request_id);
 
 --
--- Indexes for table `request_status`
+-- Indexes for table request_status
 --
-ALTER TABLE `request_status`
-  ADD PRIMARY KEY (`ID`);
+ALTER TABLE request_status
+  ADD PRIMARY KEY (ID);
 
 --
--- Indexes for table `rooms`
+-- Indexes for table rooms
 --
-ALTER TABLE `rooms`
-  ADD PRIMARY KEY (`ID`);
+ALTER TABLE rooms
+  ADD PRIMARY KEY (ID);
 
 --
--- Indexes for table `users`
+-- Indexes for table users
 --
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `user_role_id` (`user_role_id`),
-  ADD KEY `vent_id` (`vent_id`);
+ALTER TABLE users
+  ADD PRIMARY KEY (ID),
+  ADD KEY user_role_id (user_role_id),
+  ADD KEY vent_id (vent_id);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT for table `change_requests`
+-- AUTO_INCREMENT for table change_requests
 --
-ALTER TABLE `change_requests`
-  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+ALTER TABLE change_requests
+  MODIFY ID integer UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- AUTO_INCREMENT for table `notifications_queue`
+-- AUTO_INCREMENT for table notifications_queue
 --
-ALTER TABLE `notifications_queue`
-  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+ALTER TABLE notifications_queue
+  MODIFY ID integer UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `notification_type`
+-- AUTO_INCREMENT for table notification_type
 --
-ALTER TABLE `notification_type`
-  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+ALTER TABLE notification_type
+  MODIFY ID integer UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `requested_changes`
+-- AUTO_INCREMENT for table requested_changes
 --
-ALTER TABLE `requested_changes`
-  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+ALTER TABLE requested_changes
+  MODIFY ID integer UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
