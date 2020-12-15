@@ -1,10 +1,5 @@
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize('vent2u', 'manager', ']SgtSF~BG)8WN^%p', {
-    host: "localhost",
-    dialect: "mysql",
-    port: 3306,
-    syncOnAssociation: false
-});
+import 'connection.js';
 
 const db = {};
 
