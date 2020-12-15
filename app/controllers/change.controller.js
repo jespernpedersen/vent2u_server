@@ -3,7 +3,6 @@ const { requested_changes } = require("../models");
 const db = require("../models");
 const ChangeRequests = db.change_requests;
 const RequestedChanges = db.requested_changes;
-// const Op = db.Sequelize.Op;
 
 exports.post = (req, res) => {
     RequestGroup = {

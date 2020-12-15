@@ -4,18 +4,10 @@ const Op = db.Sequelize.Op;
 
 exports.get = (req, res) => {
 
-    const Sequelize = require("sequelize");
-    const sequelize = new Sequelize('vent2u', 'manager', ']SgtSF~BG)8WN^%p', {
-        host: "localhost",
-        dialect: "mysql",
-        port: 3306,
-        syncOnAssociation: false
-    });
-
     let query = `SELECT * from v_users`;
     query += req.params.id ? " WHERE ID = ?;" : ";";
 
-    sequelize.query(query, {
+    db.query(query, {
         replacements: [req.params.id],
         type: sequelize.QueryTypes.SELECT
       }).then(data => {
@@ -29,17 +21,10 @@ exports.get = (req, res) => {
 }
 
 exports.getFromRoom = (req, res) => {
-    const Sequelize = require("sequelize");
-    const sequelize = new Sequelize('vent2u', 'manager', ']SgtSF~BG)8WN^%p', {
-        host: "localhost",
-        dialect: "mysql",
-        port: 3306,
-        syncOnAssociation: false
-    });
 
     const query = `SELECT * from v_users WHERE room_id = ?`;
 
-    sequelize.query(query, {
+    db.query(query, {
         replacements: [req.params.id],
         type: sequelize.QueryTypes.SELECT
       }).then(data => {
@@ -51,17 +36,10 @@ exports.getFromRoom = (req, res) => {
 }
 
 exports.getFromVent = (req, res) => {
-    const Sequelize = require("sequelize");
-    const sequelize = new Sequelize('vent2u', 'manager', ']SgtSF~BG)8WN^%p', {
-        host: "localhost",
-        dialect: "mysql",
-        port: 3306,
-        syncOnAssociation: false
-    });
 
     const query = `SELECT * from v_users WHERE vent_id = ?`;
 
-    sequelize.query(query, {
+    db.query(query, {
         replacements: [req.params.id],
         type: sequelize.QueryTypes.SELECT
       }).then(data => {
