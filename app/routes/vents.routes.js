@@ -1,9 +1,8 @@
 module.exports = app => {
 
-    const settings = require("../shared/constants");
+    require("dotenv").config();
 
     const router = require("express").Router();
-
     const vents = require("../controllers/vent.controller");
 
     // Read,
@@ -15,5 +14,5 @@ module.exports = app => {
     // Create, Update
     router.put('/', vents.update);
 
-    app.use(settings.PATH + '/vents', router);
+    app.use(process.env.PATH + '/vents', router);
 }

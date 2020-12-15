@@ -2,7 +2,6 @@ module.exports = app => {
 
     require("dotenv").config();
 
-    const settings = require("../shared/constants");
     const router = require("express").Router();
     const users = require("../controllers/user.controller");
 

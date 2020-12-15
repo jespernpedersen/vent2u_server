@@ -3,7 +3,6 @@ module.exports = app => {
     
     require("dotenv").config();
     
-    const settings = require("../shared/constants");
     const router = require("express").Router();
     const classes = require("../controllers/class.controller");
 

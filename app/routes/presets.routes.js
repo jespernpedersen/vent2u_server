@@ -3,7 +3,7 @@ const { presets } = require("../models");
 module.exports = app => {
     
     require("dotenv").config();
-    const settings = require("../shared/constants");
+
     const router = require("express").Router();
     const presets = require("../controllers/preset.controller");
 
