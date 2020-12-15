@@ -1,5 +1,7 @@
 module.exports = app => {
 
+    require("dotenv").config();
+
     const settings = require("../shared/constants");
 
     const router = require("express").Router();
@@ -8,5 +10,5 @@ module.exports = app => {
 
     router.post('/login', login.login);
 
-    app.use(settings.PATH , router);
+    app.use(process.env.PATH , router);
 }
