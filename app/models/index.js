@@ -5,8 +5,11 @@ const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, pr
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
     port: process.env.DB_PORT,
+    protocol: "postgres",
     syncOnAssociation: false
 });
+
+console.log(process.env.DB_PASSWORD + " " + process.env.DB_USER + " ");
 
 const db = {};
 

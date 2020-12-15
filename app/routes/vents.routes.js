@@ -14,5 +14,5 @@ module.exports = app => {
     // Create, Update
     router.put('/', vents.update);
 
-    app.use(process.env.PATH + '/vents', router);
+    app.use(process.env.DB_PATH + '/vents', router);
 }

@@ -7,5 +7,7 @@ module.exports = app => {
 
     router.post('/login', login.login);
 
-    app.use(process.env.PATH , router);
+    console.log(process.env.DB_PATH);
+
+    app.use(process.env.DB_PATH , router);
 }

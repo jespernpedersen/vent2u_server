@@ -11,5 +11,5 @@ module.exports = app => {
     router.post('/', claimRequests.create);//create new claimrequest
     router.put('/', claimRequests.update);//change request status
 
-    app.use(process.env.PATH  + '/claims', router);
+    app.use(process.env.DB_PATH  + '/claims', router);
 }

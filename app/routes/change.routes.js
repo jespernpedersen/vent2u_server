@@ -8,5 +8,5 @@ module.exports = app => {
     router.post('/', change.post);
     router.get('/', change.get);
 
-    app.use(process.env.PATH  + '/change', router);
+    app.use(process.env.DB_PATH  + '/change', router);
 }

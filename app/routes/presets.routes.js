@@ -11,5 +11,5 @@ module.exports = app => {
     router.get('/:id', presets.get);
     router.get('/user/:id', presets.getFromUser);
 
-    app.use(process.env.PATH  +'/presets', router);
+    app.use(process.env.DB_PATH  +'/presets', router);
 }

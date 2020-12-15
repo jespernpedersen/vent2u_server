@@ -9,5 +9,5 @@ module.exports = app => {
     router.get('/:id', rooms.get);
     
 
-    app.use(process.env.PATH + '/rooms', router);
+    app.use(process.env.DB_PATH + '/rooms', router);
 }

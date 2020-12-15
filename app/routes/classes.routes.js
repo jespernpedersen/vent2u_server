@@ -10,5 +10,5 @@ module.exports = app => {
     router.get('/:id', classes.get);
     router.get('/rooms/:id', classes.getFromRoom);
 
-    app.use(process.env.PATH  +'/classes', router);
+    app.use(process.env.DB_PATH  +'/classes', router);
 }

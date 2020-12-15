@@ -8,5 +8,5 @@ module.exports = app => {
     router.get('/', status.get);
     router.get('/:id', status.get);
 
-    app.use(process.env.PATH + '/claimstatus', router);
+    app.use(process.env.DB_PATH + '/claimstatus', router);
 }
