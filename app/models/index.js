@@ -6,7 +6,7 @@ const sequelize = new Sequelize(process.env.DB_CONN_STRING, {
     dialect: process.env.DB_DIALECT,
     protocol: process.env.DB_PROTOCOL,
     dialectOptions: {
-        ssl: true
+        ssl: false
     },
     port: process.env.DB_PORT,
     syncOnAssociation: false
