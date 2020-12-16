@@ -1,6 +1,3 @@
-const {
-    exception
-} = require("console");
 const db = require("../models");
 const ClaimRequests = db.claimRequests;
 const ClaimStatus = db.claimRequestStatus;

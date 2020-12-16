@@ -20,7 +20,7 @@ exports.getFromRoom = (req, res) => {
 
     const query = `SELECT * from v_vents WHERE room_ID = ?`;
 
-    db.query(query, {
+    db.sequelize.query(query, {
         replacements: [req.params.id],
         type: sequelize.QueryTypes.SELECT
       }).then(data => {

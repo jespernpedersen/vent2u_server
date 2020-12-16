@@ -1,7 +1,5 @@
-const { classes } = require("../models");
 const db = require("../models");
 const Classes = db.classes;
-const Op = db.Sequelize.Op;
 
 exports.get = (req, res) => {
 
