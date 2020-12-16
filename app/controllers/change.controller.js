@@ -6,7 +6,7 @@ exports.post = (req, res) => {
         vent_id: 1,
         status_id: 0
     }
-    ChangeRequests.create(RequestGroup, { isNewRecord: true }).then(function(err, result) {
+    db.changeRequests.create(RequestGroup, { isNewRecord: true }).then(function(err, result) {
             if (err) {
                 console.log(err);
                 // callback(0);
