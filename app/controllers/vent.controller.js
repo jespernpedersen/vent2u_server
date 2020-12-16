@@ -22,7 +22,7 @@ exports.getFromRoom = (req, res) => {
 
     db.sequelize.query(query, {
         replacements: [req.params.id],
-        type: sequelize.QueryTypes.SELECT
+        type: db.sequelize.QueryTypes.SELECT
       }).then(data => {
         res.send(data);
       })
