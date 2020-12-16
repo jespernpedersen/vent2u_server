@@ -1,13 +1,11 @@
-const db = require("../models");
-const Users = db.users;
-const Op = db.Sequelize.Op;
-
 exports.get = (req, res) => {
+
+    const db = require("../models");
 
     let query = `SELECT * from v_users`;
     query += req.params.id ? " WHERE ID = ?;" : ";";
 
-    db.query(query, {
+    db.users.query(query, {
         replacements: [req.params.id],
         type: sequelize.QueryTypes.SELECT
       }).then(data => {
@@ -21,10 +19,11 @@ exports.get = (req, res) => {
 }
 
 exports.getFromRoom = (req, res) => {
-
+    
+    const db = require("../models");
     const query = `SELECT * from v_users WHERE room_id = ?`;
 
-    db.query(query, {
+    db.users.query(query, {
         replacements: [req.params.id],
         type: sequelize.QueryTypes.SELECT
       }).then(data => {
@@ -37,9 +36,10 @@ exports.getFromRoom = (req, res) => {
 
 exports.getFromVent = (req, res) => {
 
+    const db = require("../models");
     const query = `SELECT * from v_users WHERE vent_id = ?`;
 
-    db.query(query, {
+    db.users.query(query, {
         replacements: [req.params.id],
         type: sequelize.QueryTypes.SELECT
       }).then(data => {
@@ -51,10 +51,11 @@ exports.getFromVent = (req, res) => {
 }
 
 exports.update = (req, res) => {
-    const id = req.body.ID;
-    console.log(req.body);
-    Users.update(req.body, {
-            where: { ID: id }
+
+    const db = require("../models");
+
+    db.users.update(req.body, {
+            where: { ID: req.body.id }
         })
         .then(num => {
             console.log(num);
