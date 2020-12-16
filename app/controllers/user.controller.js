@@ -50,7 +50,7 @@ exports.getFromVent = (req, res) => {
 
 exports.update = (req, res) => {
 
-    db.sequelize.users.update(req.body, {
+    db.users.update(req.body, {
             where: { ID: req.body.ID }
         })
         .then(num => {
