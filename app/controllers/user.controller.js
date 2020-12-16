@@ -8,13 +8,10 @@ exports.get = (req, res) => {
     db.users.query(query, {
         replacements: [req.params.id],
         type: sequelize.QueryTypes.SELECT
-      }).then(data => {
+        }).then(data => {
             res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while retrieving users."
-            });
+        }).catch(err => {
+            res.status(500).send(err.original.sqlMessage);
         });
 }
 
@@ -28,8 +25,7 @@ exports.getFromRoom = (req, res) => {
         type: sequelize.QueryTypes.SELECT
       }).then(data => {
         res.send(data);
-      })
-      .catch(err => {
+      }).catch(err => {
         res.status(500).send(err.original.sqlMessage);
     });
 }
