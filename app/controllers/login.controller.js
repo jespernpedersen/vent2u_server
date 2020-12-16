@@ -5,7 +5,7 @@ exports.login = (req, res) => {
 
     const query = `call login(?, ?)`;
 
-    db.sequilize.query(query, {
+    db.users.query(query, {
             replacements: [req.body.email, req.body.password],
             type: sequelize.QueryTypes.SELECT
         }).then(data => {
