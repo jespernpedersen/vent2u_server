@@ -5,7 +5,7 @@ const Op = db.Sequelize.Op;
 exports.get = (req, res) => {
     condition = req.params.id ? { ID: req.params.id } : null;
 
-    Vents.findAll({ where: condition, order: ["ID", "ASC"] })
+    Vents.findAll({ where: condition, order: [["ID", "ASC"]] })
         .then(data => {
             res.send(data);
         })
